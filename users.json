@@ -1,0 +1,7 @@
+[
+    { "id": 1, "name": "Devansh Ach", "email": "devansh@example.com", "role": "admin" },
+    { "id": 2, "name": "Robin Dubey", "email": "rob@example.com", "role": "user" },
+    { "id": 3, "name": "Vaibhav D", "email": "vaibhav@example.com", "role": "user" },
+    { "id": 4, "name": "Kirti Dhadve", "email": "kirti@example.com", "role": "admin" },
+    { "id": 5, "name": "Gauri Shinde", "email": "gauri@example.com", "role": "user" }
+]

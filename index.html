@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic User List with Handlebars</title>
+
+    <!-- DaisyUI + Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Handlebars -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
+</head>
+<body class="bg-base-200 min-h-screen">
+
+    <div class="max-w-6xl mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center mb-10">Dynamic User List with Handlebars</h1>
+
+        <!-- User List Container -->
+        <div id="user-list-container"></div>
+    </div>
+
+    <!-- USER CARD PARTIAL -->
+    <script id="user-card-partial" type="text/x-handlebars-template">
+        <div class="card shadow-md rounded-xl p-4 transition-all duration-200
+            hover:shadow-xl hover:scale-[1.02]
+            {{#if (eq role 'admin')}} 
+                bg-primary text-primary-content border-2 border-primary-focus 
+            {{else}} 
+                bg-base-100 
+            {{/if}}
+        ">
+            <div class="card-body space-y-2">
+
+                <h2 class="card-title text-lg font-semibold">
+                    {{name}}
+                </h2>
+
+                <p class="text-sm opacity-90">
+                    {{email}}
+                </p>
+
+                <div class="card-actions justify-end">
+                    {{#if (eq role 'admin')}}
+                        <span class="badge badge-secondary badge-outline font-bold">
+                            Admin Role
+                        </span>
+                    {{else}}
+                        <span class="badge badge-ghost">
+                            Standard User
+                        </span>
+                    {{/if}}
+                </div>
+
+            </div>
+        </div>
+    </script>
+
+    <!-- MAIN TEMPLATE -->
+    <script id="user-list-template" type="text/x-handlebars-template">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {{#each users}}
+                {{> userCard this}}
+            {{/each}}
+        </div>
+    </script>
+
+    <!-- SCRIPT SECTION -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Register equality helper for Handlebars
+            Handlebars.registerHelper('eq', (a, b) => a === b);
+
+            // Register Partial
+            const partialSource = document.getElementById('user-card-partial').innerHTML;
+            Handlebars.registerPartial('userCard', partialSource);
+
+            // Compile main template
+            const mainTemplateSource = document.getElementById('user-list-template').innerHTML;
+            const mainTemplate = Handlebars.compile(mainTemplateSource);
+
+            // Fetch JSON data
+            fetch('users.json')
+                .then(res => res.json())
+                .then(usersArray => {
+                    const context = { users: usersArray };
+                    const outputHTML = mainTemplate(context);
+                    document.getElementById('user-list-container').innerHTML = outputHTML;
+                })
+                .catch(err => {
+                    console.error("Error loading JSON:", err);
+                    document.getElementById('user-list-container').innerHTML =
+                        "<div class='alert alert-error'>Failed to load users.json</div>";
+                });
+
+        });
+    </script>
+
+</body>
+</html>
